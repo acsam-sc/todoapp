@@ -9,25 +9,24 @@ const ToDoApp = () => {
   console.log('tasksArray', tasksArray)
   const { category } = useParams()
 
-  const getData = async () => {
-    try {
-      const { data } = await axios.get(`http://localhost:8090/api/v1/tasks/${category}`)
-      setTasksArray(data)
-    } catch {
-      console.error('Cannot connect to server')
-    }
-  }
-
-  const sendNewTask = async () => {
-    try {
-      const response = await axios.post(`http://localhost:8090/api/v1/tasks/${category}`)
-      if (response.status === 'success') getData()
-    } catch {
-      console.error('Error sending Task')
-    }
-  }
+  // const sendNewTask = async () => {
+  //   try {
+  //     const response = await axios.post(`http://localhost:8090/api/v1/tasks/${category}`)
+  //     // if (response.data.status === 'success') 
+  //   } catch {
+  //     console.error('Error sending Task')
+  //   }
+  // }
 
   useEffect(() => {
+    const getData = async () => {
+      try {
+        const { data } = await axios.get(`http://localhost:8090/api/v1/tasks/${category}`)
+        setTasksArray(data)
+      } catch {
+        console.error('Cannot connect to server')
+      }
+    }
     getData()
   }, [category])
 
@@ -47,7 +46,7 @@ const ToDoApp = () => {
           title={it.title}
           status={it.status}
           category={category}
-          sendNewTask={sendNewTask}
+          // sendNewTask={sendNewTask}
         />)
         ) : (
           <span className="m-2 pl-4 w-1/2 font-semibold text-xl">List is empty</span>
