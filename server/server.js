@@ -5,24 +5,24 @@ import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
 import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
+import shortid from 'shortid'
 
 import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
+// const { readFile, writeFile, unlink } = require('fs').promises
+const { readFile, writeFile } = require('fs').promises
+
+const file = (filename) => `${__dirname}/tasks/${filename}.json`
+
 const Root = () => ''
 
 try {
-  // eslint-disable-next-line import/no-unresolved
-  // ;(async () => {
-  //   const items = await import('../dist/assets/js/root.bundle')
-  //   console.log(JSON.stringify(items))
-
-  //   Root = (props) => <items.Root {...props} />
-  //   console.log(JSON.stringify(items.Root))
-  // })()
+  // eslint-disable-next-line no-console
   console.log(Root)
 } catch (ex) {
+  // eslint-disable-next-line no-console
   console.log(' run yarn build:prod to enable ssr')
 }
 
@@ -40,6 +40,53 @@ const middleware = [
 ]
 
 middleware.forEach((it) => server.use(it))
+
+const writeCategoryFile = async (data, filename) =>
+  writeFile(file(filename), JSON.stringify(data), { encoding: 'utf8' })
+
+// const deleteCategoryFile = async (filename) => unlink(file(filename))
+
+const readCategoryFile = async (filename) => {
+  // console.log('Trying to read file from', file(filename))
+  const fd = await readFile(file(filename), { encoding: 'utf8' })
+    .then((data) => JSON.parse(data))
+    .catch((err) => {
+      if (err.code === 'ENOENT') {
+        return []
+      }
+      return err
+    })
+  // console.log('FD', fd)
+  return fd
+}
+
+server.get('/api/v1/tasks/:category', async (req, res) => {
+  const data = await readCategoryFile(req.params.category)
+  const response = data.map((it) => {
+    const filteredKeys = Object.keys(it).filter((key) => key[0] !== '_')
+    return filteredKeys.reduce((acc, item) => {
+      return { ...acc, [item]: it[item] }
+    }, {})
+  })
+  // console.log('/api/v1/tasks/:category', data)
+  res.json(response)
+})
+
+server.post('/api/v1/tasks/:category', async (req, res) => {
+  const data = await readCategoryFile(req.params.category)
+  const newTask = {
+    taskId: shortid.generate(),
+    title: req.body.title,
+    status: 'new',
+    _isDeleted: false,
+    _createdAt: +new Date(),
+    _deletedAt: null
+  }
+  const dataToWrite = [...data, newTask]
+  writeCategoryFile(dataToWrite, req.params.category)
+  const responseBody = { status: 'success', taskId: newTask.taskId }
+  res.json(responseBody)
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)
@@ -88,4 +135,5 @@ if (config.isSocketsEnabled) {
   })
   echo.installHandlers(app, { prefix: '/ws' })
 }
+// eslint-disable-next-line no-console
 console.log(`Serving at http://localhost:${port}`)
