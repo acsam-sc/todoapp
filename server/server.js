@@ -73,7 +73,6 @@ server.get('/api/v1/tasks/:category', async (req, res) => {
 })
 
 server.post('/api/v1/tasks/:category', async (req, res) => {
-  const data = await readCategoryFile(req.params.category)
   const newTask = {
     taskId: shortid.generate(),
     title: req.body.title,
@@ -82,10 +81,19 @@ server.post('/api/v1/tasks/:category', async (req, res) => {
     _createdAt: +new Date(),
     _deletedAt: null
   }
-  const dataToWrite = [...data, newTask]
-  writeCategoryFile(dataToWrite, req.params.category)
-  const responseBody = { status: 'success', taskId: newTask.taskId }
-  res.json(responseBody)
+  await readCategoryFile(req.params.category)
+    .then((it) => {
+      writeCategoryFile([...it, newTask], req.params.category)
+      const responseBody = { status: 'success', taskId: newTask.taskId }
+      res.json(responseBody)
+    })
+    .catch((err) => {
+      if (err.code === 'ENOENT') {
+        writeCategoryFile([newTask], req.params.category)
+        const responseBody = { status: 'success', taskId: newTask.taskId }
+        res.json(responseBody)
+      }
+    })
 })
 
 server.patch('/api/v1/tasks/:category', async (req, res) => {
