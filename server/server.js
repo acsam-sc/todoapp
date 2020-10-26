@@ -41,13 +41,13 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-const writeCategoryFile = async (data, filename) =>
+const writeCategoryFile = async (data, filename) => {
   writeFile(file(filename), JSON.stringify(data), { encoding: 'utf8' })
+}
 
 // const deleteCategoryFile = async (filename) => unlink(file(filename))
 
 const readCategoryFile = async (filename) => {
-  // console.log('Trying to read file from', file(filename))
   const fd = await readFile(file(filename), { encoding: 'utf8' })
     .then((data) => JSON.parse(data))
     .catch((err) => {
@@ -85,6 +85,17 @@ server.post('/api/v1/tasks/:category', async (req, res) => {
   const dataToWrite = [...data, newTask]
   writeCategoryFile(dataToWrite, req.params.category)
   const responseBody = { status: 'success', taskId: newTask.taskId }
+  res.json(responseBody)
+})
+
+server.patch('/api/v1/tasks/:category', async (req, res) => {
+  const data = await readCategoryFile(req.params.category)
+  const dataToWrite = data.map((it) => {
+    if (it.taskId === req.body.taskId) return { ...it, ...req.body }
+    return it
+  })
+  writeCategoryFile(dataToWrite, req.params.category)
+  const responseBody = { status: 'success', taskId: req.body.taskId }
   res.json(responseBody)
 })
 
