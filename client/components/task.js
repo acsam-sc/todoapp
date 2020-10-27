@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 
 const Task = (props) => {
+  const apiUrl = `${window.location.origin}/api/v1`
   const [editMode, setEditMode] = useState(false)
   const [inputValue, setInputValue] = useState(props.title)
   const [title, setTitle] = useState(props.title)
@@ -9,7 +10,7 @@ const Task = (props) => {
   const patchTitle = async (taskId, newTitle) => {
     if (inputValue !== title) {
       try {
-        const response = await axios.patch(`http://localhost:8090/api/v1/tasks/${props.category}`, {
+        const response = await axios.patch(`${apiUrl}/tasks/${props.category}`, {
           title: newTitle,
           taskId
         })

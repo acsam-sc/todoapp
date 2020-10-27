@@ -4,20 +4,21 @@ import { Link } from 'react-router-dom'
 import { history } from '../redux'
 
 const Categories = () => {
+  const apiUrl = `${window.location.origin}/api/v1`
   const [categoriesArray, setCategoriesArray] = useState([])
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:8090/api/v1/categories`)
+        const { data } = await axios.get(`${apiUrl}/categories`)
         setCategoriesArray(data.categories)
       } catch {
         console.error('Cannot connect to server')
       }
     }
     getData()
-  }, [])
+  }, [apiUrl])
 
   const CategoriesList = () => {
     return categoriesArray.map((it) => {
@@ -57,4 +58,4 @@ const Categories = () => {
   )
 }
 
-export default Categories
+export default React.memo(Categories)

@@ -23,7 +23,7 @@ try {
   console.log(Root)
 } catch (ex) {
   // eslint-disable-next-line no-console
-  console.log(' run yarn build:prod to enable ssr')
+  console.log('run yarn build:prod to enable ssr')
 }
 
 let connections = []
@@ -60,8 +60,9 @@ const readCategoryFile = async (filename) => {
   return fd
 }
 
-const readDirFiles = () => {
-  return readdir(`${__dirname}/tasks/`)
+const readDirFiles = async () => {
+  const dirFiles = await readdir(`${__dirname}/tasks/`)
+  return dirFiles
 }
 
 server.get('/api/v1/tasks/:category', async (req, res) => {

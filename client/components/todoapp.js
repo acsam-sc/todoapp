@@ -5,6 +5,7 @@ import Task from './task'
 import AddNewTask from './addnewtask'
 
 const ToDoApp = () => {
+  const apiUrl = `${window.location.origin}/api/v1`
   const [tasksArray, setTasksArray] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
   // const [error, setError] = useState(null)
@@ -12,7 +13,7 @@ const ToDoApp = () => {
 
   const sendNewTask = async (title) => {
     try {
-      const response = await axios.post(`http://localhost:8090/api/v1/tasks/${category}`, { title })
+      const response = await axios.post(`${apiUrl}/tasks/${category}`, { title })
       if (response.data.status === 'success') {
         setTasksArray([
           ...tasksArray,
@@ -32,14 +33,14 @@ const ToDoApp = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:8090/api/v1/tasks/${category}`)
+        const { data } = await axios.get(`${apiUrl}/tasks/${category}`)
         setTasksArray(data)
       } catch {
         console.error('Cannot connect to server')
       }
     }
     getData()
-  }, [category])
+  }, [category, apiUrl])
 
   // const tasksList = []
   // if (tasksArray.length !== 0) tasksList = tasksArray.map(it => <Task key={it.taskId} title={it.title} status={it.status} />)
