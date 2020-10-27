@@ -12,7 +12,7 @@ import config from './config'
 import Html from '../client/html'
 
 // const { readFile, writeFile, unlink } = require('fs').promises
-const { readFile, writeFile } = require('fs').promises
+const { readFile, writeFile, readdir } = require('fs').promises
 
 const file = (filename) => `${__dirname}/tasks/${filename}.json`
 
@@ -60,6 +60,10 @@ const readCategoryFile = async (filename) => {
   return fd
 }
 
+const readDirFiles = () => {
+  return readdir(`${__dirname}/tasks/`)
+}
+
 server.get('/api/v1/tasks/:category', async (req, res) => {
   const data = await readCategoryFile(req.params.category)
   const response = data.map((it) => {
@@ -68,7 +72,18 @@ server.get('/api/v1/tasks/:category', async (req, res) => {
       return { ...acc, [item]: it[item] }
     }, {})
   })
-  // console.log('/api/v1/tasks/:category', data)
+  res.json(response)
+})
+
+server.get('/api/v1/categories', async (req, res) => {
+  const data = await readDirFiles()
+  const categoriesArray = data.map((it) => {
+    return it
+      .split('')
+      .slice(0, it.length - 5)
+      .join('')
+  })
+  const response = { status: 'success', categories: categoriesArray }
   res.json(response)
 })
 

@@ -11,8 +11,8 @@ const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
     <div className="flex flex-row border-2 w-full bg-blue-200 text-xl justify-between items-center">
       <span className="flex font-bold px-2">New task:</span>
       <input
-        className="flex border-2 border-black"
-        placeholder="Input task name"
+        className="flex flex-grow border-2 border-black"
+        placeholder="Enter task name"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />

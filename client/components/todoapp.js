@@ -47,25 +47,29 @@ const ToDoApp = () => {
   //   else return <span className="m-2 pl-4 w-1/2 font-semibold text-xl">List is empty</span>
 
   return (
-    <div className="p-4 w-1/2 bg-gray-100">
-      <span className="font-bold text-2xl">Task list for category {`"${category}"`}:</span>
-      <div>
-        {tasksArray.length ? (
-          tasksArray.map((it) => (
-            <Task
-              key={it.taskId}
-              taskId={it.taskId}
-              title={it.title}
-              status={it.status}
-              category={category}
-            />
-          ))
-        ) : (
-          <span className="p-2 pl-4 w-full font-semibold text-xl">List is empty</span>
-        )}
-      </div>
-      <div className="p-2 pl-4">
-        <AddNewTask sendNewTask={sendNewTask} newTaskTitle={newTaskTitle} />
+    <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
+      <div className="flex flex-col w-1/2 justify-between bg-yellow-200">
+        <span className="p-4 font-bold text-2xl bg-orange-300">
+          Task list for category {`"${category}"`}:
+        </span>
+        <div className="flex flex-grow flex-col">
+          {tasksArray.length ? (
+            tasksArray.map((it) => (
+              <Task
+                key={it.taskId}
+                taskId={it.taskId}
+                title={it.title}
+                status={it.status}
+                category={category}
+              />
+            ))
+          ) : (
+            <span className="flex p-2 w-full font-semibold text-xl">List is empty</span>
+          )}
+        </div>
+        <div className="flex">
+          <AddNewTask sendNewTask={sendNewTask} newTaskTitle={newTaskTitle} />
+        </div>
       </div>
     </div>
   )

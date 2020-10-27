@@ -23,13 +23,13 @@ const Task = (props) => {
   }
 
   return (
-    <div className="p-2 pl-4 w-full text-xl">
-      <div className="border-2 flex flex-row justify-between items-center bg-yellow-200">
+    <div className="flex flex-col w-full text-xl py-2">
+      <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
         <div className="flex">
           <b className="flex px-2">Title:</b>
           {editMode ? (
             <input
-              className="flex border-2"
+              className="flex flex-grow border-2"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
