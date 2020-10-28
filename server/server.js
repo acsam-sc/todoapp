@@ -71,6 +71,12 @@ const readCategoryFile = async (filename) => {
 
 const readDirFiles = async () => {
   const dirFiles = await readdir(`${__dirname}/tasks/`)
+  .catch((err) => {
+    if (err.code === 'ENOENT') {
+      return []
+    }
+    return err
+  })
   return dirFiles
 }
 

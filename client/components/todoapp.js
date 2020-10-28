@@ -51,7 +51,7 @@ const ToDoApp = () => {
 
   return (
     <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
-      <div className="flex flex-col w-1/2 justify-between bg-yellow-200">
+      <div className="flex flex-col lg:w-1/2 w-full justify-between bg-yellow-200">
         <div className="flex flex-row justify-between bg-orange-300">
           <div className="flex p-4 font-bold text-2xl">
             Task list for category {`"${category}"`}:
@@ -74,7 +74,7 @@ const ToDoApp = () => {
               />
             ))
           ) : (
-            <span className="flex p-2 w-full font-semibold text-xl">List is empty</span>
+            <div className="flex flex-grow p-2 w-full font-semibold text-xl items-center justify-center">List is empty</div>
           )}
         </div>
         <div className="flex">
