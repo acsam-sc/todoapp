@@ -21,28 +21,29 @@ const Categories = () => {
   }, [apiUrl])
 
   const CategoriesList = () => {
-      return categoriesArray.map((it) => {
-        return (
-          <div className="p-2 pl-4 border-2 lg:text-xl text-sm font-semibold bg-yellow-300" key={it}>
-            <Link to={`/${it}`}>{it}</Link>
-          </div>
-        )
-      })
+    return categoriesArray.map((it) => {
+      return (
+        <div className="p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300" key={it}>
+          <Link to={`/${it}`}>{it}</Link>
+        </div>
+      )
+    })
   }
 
   return (
     <div className="flex flex-row w-full justify-center min-h-screen">
-      <div className="flex flex-col lg:w-1/2 w-full justify-between">
-        <div className="p-4 lg:text-2xl text-normal font-bold bg-orange-300">Categories List:</div>
+      <div className="flex flex-col md:w-1/2 w-full justify-between">
+        <div className="p-4 md:text-2xl text-normal font-bold bg-orange-300">Categories List:</div>
         <div className="flex flex-grow flex-col w-full bg-yellow-200">
-          {(categoriesArray.length > 0)
-          ? <CategoriesList />
-          : (<div className="flex flex-grow p-2 pl-4 lg:text-xl text-sm font-semibold items-center justify-center">
+          {categoriesArray.length > 0 ? (
+            <CategoriesList />
+          ) : (
+            <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">
               There are no categories yet
-          </div>)
-          }
+            </div>
+          )}
         </div>
-        <div className="flex flex-row border-2 w-full lg:text-xl text-sm justify-between items-center bg-blue-200">
+        <div className="flex flex-row border-2 w-full md:text-xl text-sm justify-between items-center bg-blue-200">
           <span className="flex font-semibold px-2">New category:</span>
           <input
             className="flex flex-grow border-2 border-black"

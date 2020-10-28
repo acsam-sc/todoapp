@@ -8,7 +8,7 @@ const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
   }, [newTaskTitle])
 
   return (
-    <div className="flex flex-row border-2 w-full bg-blue-200 lg:text-xl text-sm justify-between items-center">
+    <div className="flex flex-row border-2 w-full bg-blue-200 md:text-xl text-sm justify-between items-center">
       <span className="flex font-bold px-2">New task:</span>
       <input
         className="flex flex-grow border-2 border-black"
@@ -17,7 +17,7 @@ const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
         onChange={(e) => setInputValue(e.target.value)}
       />
       <button
-        className="flex m-1 mr-2 px-1 bg-gray-500"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
         type="button"
         onClick={() => sendNewTask(inputValue)}
       >

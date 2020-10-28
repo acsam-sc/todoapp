@@ -92,9 +92,9 @@ const Task = (props) => {
   }
 
   return (
-    <div className="flex flex-col w-full lg:text-xl text-sm py-2">
+    <div className="flex flex-col w-full md:text-xl text-sm py-2">
       <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
-        <div className="flex">
+        <div className="flex flex-grow">
           <b className="flex px-2">Title:</b>
           {editMode ? (
             <input
