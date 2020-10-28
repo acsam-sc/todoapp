@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
 import Task from './task'
 import AddNewTask from './addnewtask'
@@ -50,9 +50,16 @@ const ToDoApp = () => {
   return (
     <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
       <div className="flex flex-col w-1/2 justify-between bg-yellow-200">
-        <span className="p-4 font-bold text-2xl bg-orange-300">
-          Task list for category {`"${category}"`}:
-        </span>
+        <div className="flex flex-row justify-between bg-orange-300">
+          <div className="flex p-4 font-bold text-2xl">
+            Task list for category {`"${category}"`}:
+          </div>
+          <div className="flex items-center">
+            <Link className="p-2 bg-gray-500" to="/">
+              Back
+            </Link>
+          </div>
+        </div>
         <div className="flex flex-grow flex-col">
           {tasksArray.length ? (
             tasksArray.map((it) => (

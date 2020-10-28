@@ -48,7 +48,7 @@ const Categories = () => {
           <button
             className="flex m-1 mr-2 px-1 bg-gray-500"
             type="button"
-            onClick={() => history.push(`/${inputValue}`)}
+            onClick={() => history.push(`/${inputValue.toLowerCase()}`)}
           >
             Go
           </button>

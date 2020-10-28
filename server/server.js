@@ -12,7 +12,7 @@ import config from './config'
 import Html from '../client/html'
 
 // const { readFile, writeFile, unlink } = require('fs').promises
-const { readFile, writeFile, readdir, mkdir, access } = require('fs').promises
+const { readFile, writeFile, readdir, mkdir, access, unlink } = require('fs').promises
 
 const dirName = `${__dirname}/tasks`
 const file = (filename) => `${dirName}/${filename}.json`
@@ -43,9 +43,7 @@ const middleware = [
 middleware.forEach((it) => server.use(it))
 
 const writeCategoryFile = async (data, filename) => {
-  await access(dirName)
-  // .then(() => {})
-  .catch((err) => {
+  await access(dirName).catch((err) => {
     if (err.code === 'ENOENT') {
       mkdir(dirName)
     }
@@ -53,7 +51,10 @@ const writeCategoryFile = async (data, filename) => {
   writeFile(file(filename), JSON.stringify(data), { encoding: 'utf8' })
 }
 
-// const deleteCategoryFile = async (filename) => unlink(file(filename))
+const deleteAllFiles = async () => {
+  const dirFiles = await readdir(`${__dirname}/tasks/`)
+  dirFiles.forEach((it) => unlink(`${dirName}/${it}`))
+}
 
 const readCategoryFile = async (filename) => {
   const fd = await readFile(file(filename), { encoding: 'utf8' })
@@ -128,6 +129,12 @@ server.patch('/api/v1/tasks/:category', async (req, res) => {
   })
   writeCategoryFile(dataToWrite, req.params.category)
   const responseBody = { status: 'success', taskId: req.body.taskId }
+  res.json(responseBody)
+})
+
+server.delete('/api/v1/deleteall', async (req, res) => {
+  deleteAllFiles()
+  const responseBody = { status: 'success' }
   res.json(responseBody)
 })
 
