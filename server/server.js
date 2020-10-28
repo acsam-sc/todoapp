@@ -12,9 +12,10 @@ import config from './config'
 import Html from '../client/html'
 
 // const { readFile, writeFile, unlink } = require('fs').promises
-const { readFile, writeFile, readdir } = require('fs').promises
+const { readFile, writeFile, readdir, mkdir, access } = require('fs').promises
 
-const file = (filename) => `${__dirname}/tasks/${filename}.json`
+const dirName = `${__dirname}/tasks`
+const file = (filename) => `${dirName}/${filename}.json`
 
 const Root = () => ''
 
@@ -42,6 +43,13 @@ const middleware = [
 middleware.forEach((it) => server.use(it))
 
 const writeCategoryFile = async (data, filename) => {
+  await access(dirName)
+  // .then(() => {})
+  .catch((err) => {
+    if (err.code === 'ENOENT') {
+      mkdir(dirName)
+    }
+  })
   writeFile(file(filename), JSON.stringify(data), { encoding: 'utf8' })
 }
 
