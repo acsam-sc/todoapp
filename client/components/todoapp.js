@@ -9,7 +9,7 @@ const ToDoApp = () => {
   const [tasksArray, setTasksArray] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
   // const [error, setError] = useState(null)
-  const { category } = useParams()
+  const category = useParams().category.toLowerCase()
 
   const sendNewTask = async (title) => {
     try {
