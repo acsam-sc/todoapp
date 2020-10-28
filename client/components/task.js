@@ -6,13 +6,14 @@ const Task = (props) => {
   const [editMode, setEditMode] = useState(false)
   const [inputValue, setInputValue] = useState(props.title)
   const [title, setTitle] = useState(props.title)
+  const [status, setStatus] = useState(props.status)
 
   const patchTitle = async (taskId, newTitle) => {
     if (inputValue !== title) {
       try {
         const response = await axios.patch(`${apiUrl}/tasks/${props.category}`, {
-          title: newTitle,
-          taskId
+          taskId,
+          title: newTitle
         })
         if (response.data.status === 'success' && response.data.taskId === taskId)
           setTitle(newTitle)
@@ -21,6 +22,73 @@ const Task = (props) => {
       }
     }
     setEditMode(false)
+  }
+
+  const patchStatus = async (taskId, newStatus) => {
+    try {
+      const response = await axios.patch(`${apiUrl}/tasks/${props.category}`, {
+        taskId,
+        status: newStatus
+      })
+      if (response.data.status === 'success' && response.data.taskId === taskId)
+        setStatus(newStatus)
+    } catch {
+      console.error('Error patching Status')
+    }
+  }
+
+  const InProgressButton = () => {
+    return (
+      <button
+      type="button"
+      className="flex m-1 mr-2 px-1 bg-gray-400"
+      onClick={() => patchStatus(props.taskId, 'in progress')}
+      >
+        In progress
+      </button>
+    )
+  }
+
+  const BlockButton = () => {
+    return (
+      <button
+      type="button"
+      className="flex m-1 mr-2 px-1 bg-gray-400"
+      onClick={() => patchStatus(props.taskId, 'blocked')}
+      >
+        Block
+      </button>
+    )
+  }
+
+  const DoneButton = () => {
+    return (
+      <button
+      type="button"
+      className="flex m-1 mr-2 px-1 bg-gray-400"
+      onClick={() => patchStatus(props.taskId, 'done')}
+      >
+        Done
+      </button>
+    )
+  }
+
+  const StatusButtons = () => {
+    switch (status) {
+    case 'new':
+      return <InProgressButton />
+    case 'in progress':
+      return (
+      <>
+        <BlockButton />
+        <DoneButton />
+      </>
+      )
+      case 'blocked':
+        return <InProgressButton />
+    default:
+      return <></>
+    }
   }
 
   return (
@@ -47,10 +115,13 @@ const Task = (props) => {
           {editMode ? 'Save' : 'Edit'}
         </button>
       </div>
-      <div className="border-2 flex flex-row bg-green-200">
+      <div className="border-2 flex flex-row bg-green-200 justify-between">
         <div className="flex">
           <b className="px-2">Status:</b>
-          {props.status}
+          {status}
+        </div>
+        <div className="flex flex-row">
+          <StatusButtons />
         </div>
       </div>
     </div>

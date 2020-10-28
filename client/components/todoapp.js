@@ -12,21 +12,23 @@ const ToDoApp = () => {
   const category = useParams().category.toLowerCase()
 
   const sendNewTask = async (title) => {
-    try {
-      const response = await axios.post(`${apiUrl}/tasks/${category}`, { title })
-      if (response.data.status === 'success') {
-        setTasksArray([
-          ...tasksArray,
-          {
-            taskId: response.data.taskId,
-            title,
-            status: 'new'
-          }
-        ])
-        setNewTaskTitle(response.data.taskId)
+    if (title !== '') {
+      try {
+        const response = await axios.post(`${apiUrl}/tasks/${category}`, { title })
+        if (response.data.status === 'success') {
+          setTasksArray([
+            ...tasksArray,
+            {
+              taskId: response.data.taskId,
+              title,
+              status: 'new'
+            }
+          ])
+          setNewTaskTitle(response.data.taskId)
+        }
+      } catch {
+        console.error('Error sending Task')
       }
-    } catch {
-      console.error('Error sending Task')
     }
   }
 
@@ -54,8 +56,8 @@ const ToDoApp = () => {
           <div className="flex p-4 font-bold text-2xl">
             Task list for category {`"${category}"`}:
           </div>
-          <div className="flex items-center">
-            <Link className="p-2 bg-gray-500" to="/">
+          <div className="flex pr-2 items-center">
+            <Link className="px-1 bg-gray-400 text-xl" to="/">
               Back
             </Link>
           </div>
