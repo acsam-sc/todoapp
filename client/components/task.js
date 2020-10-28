@@ -40,9 +40,9 @@ const Task = (props) => {
   const InProgressButton = () => {
     return (
       <button
-      type="button"
-      className="flex m-1 mr-2 px-1 bg-gray-400"
-      onClick={() => patchStatus(props.taskId, 'in progress')}
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => patchStatus(props.taskId, 'in progress')}
       >
         In progress
       </button>
@@ -52,9 +52,9 @@ const Task = (props) => {
   const BlockButton = () => {
     return (
       <button
-      type="button"
-      className="flex m-1 mr-2 px-1 bg-gray-400"
-      onClick={() => patchStatus(props.taskId, 'blocked')}
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => patchStatus(props.taskId, 'blocked')}
       >
         Block
       </button>
@@ -64,9 +64,9 @@ const Task = (props) => {
   const DoneButton = () => {
     return (
       <button
-      type="button"
-      className="flex m-1 mr-2 px-1 bg-gray-400"
-      onClick={() => patchStatus(props.taskId, 'done')}
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => patchStatus(props.taskId, 'done')}
       >
         Done
       </button>
@@ -75,19 +75,19 @@ const Task = (props) => {
 
   const StatusButtons = () => {
     switch (status) {
-    case 'new':
-      return <InProgressButton />
-    case 'in progress':
-      return (
-      <>
-        <BlockButton />
-        <DoneButton />
-      </>
-      )
+      case 'new':
+        return <InProgressButton />
+      case 'in progress':
+        return (
+          <>
+            <BlockButton />
+            <DoneButton />
+          </>
+        )
       case 'blocked':
         return <InProgressButton />
-    default:
-      return <></>
+      default:
+        return <></>
     }
   }
 
