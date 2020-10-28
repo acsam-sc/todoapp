@@ -8,7 +8,7 @@ const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
   }, [newTaskTitle])
 
   return (
-    <div className="flex flex-row border-2 w-full bg-blue-200 text-xl justify-between items-center">
+    <div className="flex flex-row border-2 w-full bg-blue-200 lg:text-xl text-sm justify-between items-center">
       <span className="flex font-bold px-2">New task:</span>
       <input
         className="flex flex-grow border-2 border-black"

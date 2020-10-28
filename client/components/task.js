@@ -92,7 +92,7 @@ const Task = (props) => {
   }
 
   return (
-    <div className="flex flex-col w-full text-xl py-2">
+    <div className="flex flex-col w-full lg:text-xl text-sm py-2">
       <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
         <div className="flex">
           <b className="flex px-2">Title:</b>

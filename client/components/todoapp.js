@@ -46,18 +46,18 @@ const ToDoApp = () => {
 
   // const tasksList = []
   // if (tasksArray.length !== 0) tasksList = tasksArray.map(it => <Task key={it.taskId} title={it.title} status={it.status} />)
-  //   else if (error) return <span className="m-2 pl-4 w-1/2 font-semibold text-xl text-red-600">{error}</span>
-  //   else return <span className="m-2 pl-4 w-1/2 font-semibold text-xl">List is empty</span>
+  //   else if (error) return <span className="m-2 pl-4 w-1/2 font-semibold lg:text-xl text-sm text-red-600">{error}</span>
+  //   else return <span className="m-2 pl-4 w-1/2 font-semibold lg:text-xl text-sm">List is empty</span>
 
   return (
     <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
       <div className="flex flex-col lg:w-1/2 w-full justify-between bg-yellow-200">
         <div className="flex flex-row justify-between bg-orange-300">
-          <div className="flex p-4 font-bold text-2xl">
+          <div className="flex p-4 font-bold lg:text-2xl text-normal">
             Task list for category {`"${category}"`}:
           </div>
           <div className="flex pr-2 items-center">
-            <Link className="px-1 bg-gray-400 text-xl" to="/">
+            <Link className="px-1 bg-gray-400 lg:text-xl text-sm" to="/">
               Back
             </Link>
           </div>
@@ -74,7 +74,7 @@ const ToDoApp = () => {
               />
             ))
           ) : (
-            <div className="flex flex-grow p-2 w-full font-semibold text-xl items-center justify-center">List is empty</div>
+            <div className="flex flex-grow p-2 w-full font-semibold lg:text-xl text-sm items-center justify-center">List is empty</div>
           )}
         </div>
         <div className="flex">
