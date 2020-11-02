@@ -80,13 +80,16 @@ const readDirFiles = async () => {
 }
 
 server.get('/api/v1/tasks/:category', async (req, res) => {
+  const deleted = '_isDeleted'
   const data = await readCategoryFile(req.params.category)
-  const response = data.map((it) => {
-    const filteredKeys = Object.keys(it).filter((key) => key[0] !== '_')
-    return filteredKeys.reduce((acc, item) => {
-      return { ...acc, [item]: it[item] }
-    }, {})
-  })
+  const response = data
+    .filter((it) => !it[deleted])
+    .map((it) => {
+      const filteredKeys = Object.keys(it).filter((key) => key[0] !== '_')
+      return filteredKeys.reduce((acc, item) => {
+        return { ...acc, [item]: it[item] }
+      }, {})
+    })
   res.json(response)
 })
 
@@ -126,20 +129,31 @@ server.post('/api/v1/tasks/:category', async (req, res) => {
     })
 })
 
-server.patch('/api/v1/tasks/:category', async (req, res) => {
+server.patch('/api/v1/tasks/:category/:id', async (req, res) => {
   const data = await readCategoryFile(req.params.category)
   const dataToWrite = data.map((it) => {
-    if (it.taskId === req.body.taskId) return { ...it, ...req.body }
+    if (it.taskId === req.params.id) return { ...it, ...req.body }
     return it
   })
   writeCategoryFile(dataToWrite, req.params.category)
-  const responseBody = { status: 'success', taskId: req.body.taskId }
+  const responseBody = { status: 'success', taskId: req.params.id }
   res.json(responseBody)
 })
 
 server.delete('/api/v1/deleteall', async (req, res) => {
   deleteAllFiles()
   const responseBody = { status: 'success' }
+  res.json(responseBody)
+})
+
+server.delete('/api/v1/tasks/:category/:id', async (req, res) => {
+  const data = await readCategoryFile(req.params.category)
+  const dataToWrite = data.map((it) => {
+    if (it.taskId === req.params.id) return { ...it, _isDeleted: true, _deletedAt: +new Date() }
+    return it
+  })
+  writeCategoryFile(dataToWrite, req.params.category)
+  const responseBody = { status: 'success', taskId: req.params.id }
   res.json(responseBody)
 })
 

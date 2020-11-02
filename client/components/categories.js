@@ -23,9 +23,13 @@ const Categories = () => {
   const CategoriesList = () => {
     return categoriesArray.map((it) => {
       return (
-        <div className="p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300" key={it}>
-          <Link to={`/${it}`}>{it}</Link>
-        </div>
+        <Link
+          className="p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300"
+          key={it}
+          to={`/${it}`}
+        >
+          {it}
+        </Link>
       )
     })
   }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import classnames from 'classnames'
 
 const Task = (props) => {
   const apiUrl = `${window.location.origin}/api/v1`
@@ -11,8 +12,7 @@ const Task = (props) => {
   const patchTitle = async (taskId, newTitle) => {
     if (inputValue !== title) {
       try {
-        const response = await axios.patch(`${apiUrl}/tasks/${props.category}`, {
-          taskId,
+        const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${taskId}`, {
           title: newTitle
         })
         if (response.data.status === 'success' && response.data.taskId === taskId)
@@ -24,16 +24,27 @@ const Task = (props) => {
     setEditMode(false)
   }
 
-  const patchStatus = async (taskId, newStatus) => {
+  const patchStatus = async (taskId, newStatus, _isDeleted, _deletedAt) => {
     try {
-      const response = await axios.patch(`${apiUrl}/tasks/${props.category}`, {
-        taskId,
-        status: newStatus
+      const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${taskId}`, {
+        status: newStatus,
+        _isDeleted,
+        _deletedAt
       })
       if (response.data.status === 'success' && response.data.taskId === taskId)
         setStatus(newStatus)
     } catch {
       console.error('Error patching Status')
+    }
+  }
+
+  const deleteTask = async (taskId) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/tasks/${props.category}/${taskId}`)
+      if (response.data.status === 'success' && response.data.taskId === taskId)
+        setStatus('deleted')
+    } catch {
+      console.error('Error deleting task')
     }
   }
 
@@ -73,6 +84,42 @@ const Task = (props) => {
     )
   }
 
+  const EditButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => (editMode ? patchTitle(props.taskId, inputValue) : setEditMode(true))}
+      >
+        {editMode ? 'Save' : 'Edit'}
+      </button>
+    )
+  }
+
+  const DeleteButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => deleteTask(props.taskId, 'done')}
+      >
+        Del
+      </button>
+    )
+  }
+
+  const RestoreButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => patchStatus(props.taskId, props.status, false, null)}
+      >
+        Restore
+      </button>
+    )
+  }
+
   const StatusButtons = () => {
     switch (status) {
       case 'new':
@@ -103,19 +150,33 @@ const Task = (props) => {
               onChange={(e) => setInputValue(e.target.value)}
             />
           ) : (
-            <span>{title}</span>
+            <span
+              className={classnames('', {
+                'line-through': status === 'deleted'
+              })}
+            >
+              {title}
+            </span>
           )}
         </div>
 
-        <button
-          type="button"
-          className="flex m-1 mr-2 px-1 bg-gray-400"
-          onClick={() => (editMode ? patchTitle(props.taskId, inputValue) : setEditMode(true))}
-        >
-          {editMode ? 'Save' : 'Edit'}
-        </button>
+        {status !== 'deleted' ? (
+          <>
+            <EditButton />
+            <DeleteButton />
+          </>
+        ) : (
+          <RestoreButton />
+        )}
       </div>
-      <div className="border-2 flex flex-row bg-green-200 justify-between">
+      <div
+        className={classnames('border-2 flex flex-row justify-between', {
+          'bg-gray-500': status === 'new',
+          'bg-red-600': status === 'blocked' || status === 'deleted',
+          'bg-blue-300': status === 'in progress',
+          'bg-green-300': status === 'done'
+        })}
+      >
         <div className="flex">
           <b className="px-2">Status:</b>
           {status}
