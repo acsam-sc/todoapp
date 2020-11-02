@@ -162,7 +162,7 @@ const Task = (props) => {
 
         {status !== 'deleted' ? (
           <>
-            <EditButton />
+            {status !== 'done' && <EditButton />}
             <DeleteButton />
           </>
         ) : (
