@@ -105,6 +105,34 @@ server.get('/api/v1/categories', async (req, res) => {
   res.json(response)
 })
 
+server.get('/api/v1/tasks/:category/:timespan', async (req, res) => {
+  const deleted = '_isDeleted'
+  const created = '_createdAt'
+  const day = 86400000
+  const data = await readCategoryFile(req.params.category)
+  const response = data
+    .filter((it) => !it[deleted])
+    .filter((it) => {
+      switch (req.params.timespan) {
+        case 'day':
+          return it[created] + day > +new Date()
+        case 'week':
+          return it[created] + day * 7 > +new Date()
+        case 'month':
+          return it[created] + day * 30 > +new Date()
+        default:
+          return false
+      }
+    })
+    .map((it) => {
+      const filteredKeys = Object.keys(it).filter((key) => key[0] !== '_')
+      return filteredKeys.reduce((acc, item) => {
+        return { ...acc, [item]: it[item] }
+      }, {})
+    })
+  res.json(response)
+})
+
 server.post('/api/v1/tasks/:category', async (req, res) => {
   const newTask = {
     taskId: shortid.generate(),

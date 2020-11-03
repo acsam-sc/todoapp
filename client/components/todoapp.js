@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
 import Task from './task'
 import AddNewTask from './addnewtask'
+import TimeFilters from './timefilters'
+import Error from './error'
 
 const ToDoApp = () => {
   const apiUrl = `${window.location.origin}/api/v1`
   const [tasksArray, setTasksArray] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
-  // const [error, setError] = useState(null)
+  const [error, setError] = useState({ type: null, text: null })
   const category = useParams().category.toLowerCase()
 
   const sendNewTask = async (title) => {
@@ -27,27 +29,26 @@ const ToDoApp = () => {
           setNewTaskTitle(response.data.taskId)
         }
       } catch {
-        console.error('Error sending Task')
+        setError({ type: 'sending', text: 'Error sending task, please try again' })
       }
     }
   }
 
-  useEffect(() => {
-    const getData = async () => {
+  const getData = useCallback(
+    async (path) => {
       try {
-        const { data } = await axios.get(`${apiUrl}/tasks/${category}`)
+        const { data } = await axios.get(`${apiUrl}/tasks/${category}${path}`)
         setTasksArray(data)
       } catch {
-        console.error('Cannot connect to server')
+        setError({ type: 'connection', text: 'Cannot connect to the server, please reload page' })
       }
-    }
-    getData()
-  }, [category, apiUrl])
+    },
+    [category, apiUrl]
+  )
 
-  // const tasksList = []
-  // if (tasksArray.length !== 0) tasksList = tasksArray.map(it => <Task key={it.taskId} title={it.title} status={it.status} />)
-  //   else if (error) return <span className="m-2 pl-4 w-1/2 font-semibold md:text-xl text-sm text-red-600">{error}</span>
-  //   else return <span className="m-2 pl-4 w-1/2 font-semibold md:text-xl text-sm">List is empty</span>
+  useEffect(() => {
+    getData('')
+  }, [getData])
 
   return (
     <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
@@ -62,11 +63,14 @@ const ToDoApp = () => {
             </Link>
           </div>
         </div>
+        <div className="flex flex-row justify-around bg-orange-300">
+          <TimeFilters getData={getData} />
+        </div>
         <div className="flex">
           <AddNewTask sendNewTask={sendNewTask} newTaskTitle={newTaskTitle} />
         </div>
         <div className="flex flex-grow flex-col">
-          {tasksArray.length ? (
+          {tasksArray.length > 0 &&
             tasksArray.map((it) => (
               <Task
                 key={it.taskId}
@@ -75,8 +79,9 @@ const ToDoApp = () => {
                 status={it.status}
                 category={category}
               />
-            ))
-          ) : (
+            ))}
+          {error.type === 'connection' && <Error error={error.text} />}
+          {tasksArray.length === 0 && !error && (
             <div className="flex flex-grow p-2 w-full font-semibold md:text-xl text-sm items-center justify-center">
               List is empty
             </div>
