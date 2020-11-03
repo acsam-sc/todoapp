@@ -9,13 +9,17 @@ const Categories = () => {
   const [categoriesArray, setCategoriesArray] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState(null)
+  const [isFetching, setIsFetching] = useState(null)
 
   useEffect(() => {
     const getData = async () => {
+      setIsFetching(true)
       try {
         const { data } = await axios.get(`${apiUrl}/categories`)
+        setIsFetching(false)
         setCategoriesArray(data.categories)
       } catch {
+        setIsFetching(false)
         setError('Cannot connect to the server, please reload page')
       }
     }
@@ -43,7 +47,12 @@ const Categories = () => {
         <div className="flex flex-grow flex-col w-full bg-yellow-200">
           {categoriesArray.length > 0 && <CategoriesList />}
           {error && <Error error={error} />}
-          {categoriesArray.length === 0 && !error && (
+          {isFetching && (
+            <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">
+              Loading...
+            </div>
+          )}
+          {categoriesArray.length === 0 && !error && !isFetching && (
             <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">
               There are no categories yet
             </div>

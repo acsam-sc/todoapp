@@ -12,6 +12,7 @@ const ToDoApp = () => {
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [error, setError] = useState({ type: null, text: null })
   const category = useParams().category.toLowerCase()
+  const [isFetching, setIsFetching] = useState(null)
 
   const sendNewTask = async (title) => {
     if (title !== '') {
@@ -36,10 +37,13 @@ const ToDoApp = () => {
 
   const getData = useCallback(
     async (path) => {
+      setIsFetching(true)
       try {
         const { data } = await axios.get(`${apiUrl}/tasks/${category}${path}`)
+        setIsFetching(false)
         setTasksArray(data)
       } catch {
+        setIsFetching(false)
         setError({ type: 'connection', text: 'Cannot connect to the server, please reload page' })
       }
     },
@@ -81,7 +85,12 @@ const ToDoApp = () => {
               />
             ))}
           {error.type === 'connection' && <Error error={error.text} />}
-          {tasksArray.length === 0 && !error && (
+          {isFetching && (
+            <div className="flex flex-grow p-2 w-full font-semibold md:text-xl text-sm items-center justify-center">
+              Loading...
+            </div>
+          )}
+          {tasksArray.length === 0 && !error && !isFetching && (
             <div className="flex flex-grow p-2 w-full font-semibold md:text-xl text-sm items-center justify-center">
               List is empty
             </div>
