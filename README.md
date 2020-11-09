@@ -1,10 +1,12 @@
-# SkillCrucial React Redux boilerplate
+# Simple "To Do" Application 
+
+Demo: https://to-do-testapp.herokuapp.com/
 
 ## Quick start
 
 1. Clone this repo using:
   ```shell
-  $ git clone git@github.com:ovasylenko/skillcrucial-react-redux-boilerplate.git
+  $ git clone git@github.com:acsam-sc/todoapp.git
   ```
 
 2. To install dependencies and clean the git repo run:
