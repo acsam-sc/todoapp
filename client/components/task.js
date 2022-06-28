@@ -121,6 +121,18 @@ const Task = (props) => {
     )
   }
 
+  const UndoButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex m-1 mr-2 px-1 bg-gray-400"
+        onClick={() => setInputValue(props.title)}
+      >
+        Undo
+      </button>
+    )
+  }
+
   const StatusButtons = () => {
     switch (status) {
       case 'new':
@@ -164,7 +176,7 @@ const Task = (props) => {
         {status !== 'deleted' ? (
           <>
             {status !== 'done' && <EditButton />}
-            <DeleteButton />
+            {editMode ? <UndoButton /> : <DeleteButton />}
           </>
         ) : (
           <RestoreButton />
