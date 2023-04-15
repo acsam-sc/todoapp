@@ -1,6 +1,6 @@
 # Simple "To Do" Application 
 
-Demo: https://to-do-testapp.herokuapp.com/
+Demo: http://todo.acsam.cz/
 
 ## Quick start
 
