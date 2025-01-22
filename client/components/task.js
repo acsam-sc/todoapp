@@ -57,7 +57,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => patchStatus('in progress')}
       >
         In progress
@@ -69,7 +69,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => patchStatus('blocked')}
       >
         Block
@@ -81,7 +81,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => patchStatus('done')}
       >
         Done
@@ -93,7 +93,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => (editMode ? patchTitle(inputValue) : setEditMode(true))}
       >
         {editMode ? 'Save' : 'Edit'}
@@ -103,7 +103,7 @@ const Task = (props) => {
 
   const DeleteButton = () => {
     return (
-      <button type="button" className="flex m-1 mr-2 px-1 bg-gray-400" onClick={() => deleteTask()}>
+      <button type="button" className="flex m-1 mr-2 px-1 rounded bg-gray-400" onClick={() => deleteTask()}>
         Del
       </button>
     )
@@ -113,7 +113,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => patchStatus(props.status)}
       >
         Restore
@@ -125,7 +125,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 bg-gray-400"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
         onClick={() => setInputValue(props.title)}
       >
         Undo
@@ -158,7 +158,7 @@ const Task = (props) => {
           <b className="flex px-2">Title:</b>
           {editMode ? (
             <input
-              className="flex flex-grow border-2"
+              className="flex flex-grow rounded border-2"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />

@@ -59,10 +59,10 @@ const ToDoApp = () => {
       <div className="flex flex-col md:w-1/2 w-full justify-between bg-yellow-200">
         <div className="flex flex-row justify-between bg-orange-300">
           <div className="flex p-4 font-bold md:text-2xl text-normal">
-            Task list for category {`"${category}"`}:
+            Tasks in category {`"${category}"`}:
           </div>
           <div className="flex pr-2 items-center">
-            <Link className="px-1 bg-gray-400 md:text-xl text-sm" to="/">
+            <Link className="px-1 bg-gray-400 rounded md:text-xl text-sm" to="/">
               Back
             </Link>
           </div>
