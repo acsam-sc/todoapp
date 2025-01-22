@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-// import { Link } from 'react-router-dom'
 import { history } from '../redux'
 import Error from './error'
 import CategoriesList from './categoriesList'
@@ -38,12 +37,13 @@ const Categories = () => {
       <div className="flex flex-col md:w-1/2 w-full justify-between">
         <div className="p-4 md:text-2xl text-normal font-bold bg-orange-300">Categories List:</div>
         <div className="flex flex-grow flex-col w-full bg-yellow-200">
-          {categoriesArray.length > 0 &&
+          {categoriesArray.length > 0 && (
             <CategoriesList
               categoriesArray={categoriesArray}
               setCategoriesArray={setCategoriesArray}
               setError={setError}
-            />}
+            />
+          )}
           {error && <Error error={error} />}
           {isFetching && (
             <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">

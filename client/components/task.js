@@ -103,7 +103,11 @@ const Task = (props) => {
 
   const DeleteButton = () => {
     return (
-      <button type="button" className="flex m-1 mr-2 px-1 rounded bg-gray-400" onClick={() => deleteTask()}>
+      <button
+        type="button"
+        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        onClick={() => deleteTask()}
+      >
         Del
       </button>
     )

@@ -8,18 +8,20 @@ const CategoriesList = (props) => {
       await axios.delete(`/api/v1/tasks/${category}`)
       props.setCategoriesArray([])
     } catch (error) {
-      props.setError({ type: 'connection', text: 'Cannot connect to the server, please reload page' })
+      props.setError({
+        type: 'sending',
+        text: 'Cannot delete category, try again later'
+      })
     }
   }
 
   return props.categoriesArray.map((category) => {
     return (
-      <div className="flex flex-row p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300 justify-between" key={category}>
-        <Link
-          to={`/${category}`}
-        >
-          {category}
-        </Link>
+      <div
+        className="flex flex-row p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300 justify-between"
+        key={category}
+      >
+        <Link to={`/${category}`}>{category}</Link>
         <button
           className="flex m-1 mr-2 px-1 bg-gray-500 rounded items-center"
           type="button"

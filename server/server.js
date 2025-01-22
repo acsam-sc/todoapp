@@ -2,8 +2,6 @@ import express from 'express'
 import path from 'path'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import { renderToStaticNodeStream } from 'react-dom/server'
-import React from 'react'
 import shortid from 'shortid'
 import { promises } from 'fs'
 import sockjs from 'sockjs'
@@ -11,7 +9,8 @@ import config from './config'
 import Html from '../client/html'
 
 const { readFile, writeFile, readdir, mkdir, access, unlink, rename } = promises
-
+// for server use string below
+// const __dirname = process.env.NODE_PATH
 const categoriesDir = `${__dirname}/tasks`
 const file = (filename) => `${categoriesDir}/${filename}.json`
 
@@ -218,21 +217,6 @@ server.delete('/api/v1/tasks/:category', async (req, res) => {
 server.use('/api/', (req, res) => {
   res.status(404)
   res.end()
-})
-
-const [htmlStart, htmlEnd] = Html({
-  body: 'separator',
-  title: 'Simple ToDo App'
-}).split('separator')
-
-server.get('/', (req, res) => {
-  const appStream = renderToStaticNodeStream(<Root location={req.url} context={{}} />)
-  res.write(htmlStart)
-  appStream.pipe(res, { end: false })
-  appStream.on('end', () => {
-    res.write(htmlEnd)
-    res.end()
-  })
 })
 
 server.get('/*', (req, res) => {
