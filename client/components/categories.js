@@ -33,9 +33,9 @@ const Categories = () => {
   }
 
   return (
-    <div className="flex flex-row w-full justify-center min-h-screen">
+    <div className="flex flex-row flex-1 w-full justify-center absolute inset-0 overflow-y-auto">
       <div className="flex flex-col md:w-1/2 w-full justify-between">
-        <div className="p-4 md:text-2xl text-normal font-bold bg-orange-300">Categories List:</div>
+        <div className="p-4 md:text-2xl text-normal font-bold bg-orange-300">Categories:</div>
         <div className="flex flex-grow flex-col w-full bg-yellow-200">
           {categoriesArray.length > 0 && (
             <CategoriesList
@@ -56,10 +56,10 @@ const Categories = () => {
             </div>
           )}
         </div>
-        <div className="flex flex-row border-2 w-full md:text-xl text-sm justify-between items-center bg-blue-200">
+        <div className="flex flex-row border-2 w-full md:text-xl text-sm justify-between items-center bg-yellow-300">
           <span className="flex font-semibold px-2">New category:</span>
           <input
-            className="flex flex-grow border-2 rounded border-black"
+            className="flex flex-grow min-w-0 border-2 rounded border-black"
             placeholder="Enter category name"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

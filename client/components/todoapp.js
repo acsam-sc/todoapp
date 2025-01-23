@@ -7,7 +7,6 @@ import TimeFilters from './timefilters'
 import Error from './error'
 
 const ToDoApp = () => {
-  const apiUrl = `${window.location.origin}/api/v1`
   const [tasksArray, setTasksArray] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [error, setError] = useState({ type: null, text: null })
@@ -17,7 +16,7 @@ const ToDoApp = () => {
   const sendNewTask = async (title) => {
     if (title !== '') {
       try {
-        const response = await axios.post(`${apiUrl}/tasks/${category}`, { title })
+        const response = await axios.post(`/api/v1/tasks/${category}`, { title })
         if (response.data.status === 'success') {
           setTasksArray([
             ...tasksArray,
@@ -39,7 +38,7 @@ const ToDoApp = () => {
     async (path) => {
       setIsFetching(true)
       try {
-        const { data } = await axios.get(`${apiUrl}/tasks/${category}${path}`)
+        const { data } = await axios.get(`/api/v1/tasks/${category}${path}`)
         setIsFetching(false)
         setTasksArray(data)
       } catch {
@@ -47,7 +46,7 @@ const ToDoApp = () => {
         setError({ type: 'connection', text: 'Cannot connect to the server, please reload page' })
       }
     },
-    [category, apiUrl]
+    [category]
   )
 
   useEffect(() => {
@@ -55,12 +54,10 @@ const ToDoApp = () => {
   }, [getData])
 
   return (
-    <div className="flex flex-row w-full min-h-screen justify-center bg-gray-100">
+    <div className="flex flex-row w-full absolute inset-0 justify-center bg-gray-100">
       <div className="flex flex-col md:w-1/2 w-full justify-between bg-yellow-200">
         <div className="flex flex-row justify-between bg-orange-300">
-          <div className="flex p-4 font-bold md:text-2xl text-normal">
-            Tasks in category {`"${category}"`}:
-          </div>
+          <div className="flex p-4 font-bold md:text-2xl text-normal">Tasks for {category}:</div>
           <div className="flex pr-2 items-center">
             <Link className="px-1 bg-gray-400 rounded md:text-xl text-sm" to="/">
               Back
@@ -70,10 +67,7 @@ const ToDoApp = () => {
         <div className="flex flex-row justify-around bg-orange-300">
           <TimeFilters getData={getData} />
         </div>
-        <div className="flex">
-          <AddNewTask sendNewTask={sendNewTask} newTaskTitle={newTaskTitle} />
-        </div>
-        <div className="flex flex-grow flex-col">
+        <div className="flex flex-grow flex-col overflow-y-auto">
           {tasksArray.length > 0 &&
             tasksArray.map((it) => (
               <Task

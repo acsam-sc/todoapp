@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import Error from './error'
 
 const Task = (props) => {
-  const apiUrl = `${window.location.origin}/api/v1`
   const [editMode, setEditMode] = useState(false)
   const [inputValue, setInputValue] = useState(props.title)
   const [title, setTitle] = useState(props.title)
@@ -15,7 +14,7 @@ const Task = (props) => {
     if (inputValue !== title) {
       setError(null)
       try {
-        const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${props.taskId}`, {
+        const response = await axios.patch(`/api/v1/tasks/${props.category}/${props.taskId}`, {
           title: newTitle
         })
         if (response.data.status === 'success' && response.data.taskId === props.taskId)
@@ -30,7 +29,7 @@ const Task = (props) => {
   const patchStatus = async (newStatus, _isDeleted = false, _deletedAt = null) => {
     setError(null)
     try {
-      const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${props.taskId}`, {
+      const response = await axios.patch(`/api/v1/tasks/${props.category}/${props.taskId}`, {
         status: newStatus,
         _isDeleted,
         _deletedAt
@@ -45,7 +44,7 @@ const Task = (props) => {
   const deleteTask = async () => {
     setError(null)
     try {
-      const response = await axios.delete(`${apiUrl}/tasks/${props.category}/${props.taskId}`)
+      const response = await axios.delete(`/api/v1/tasks/${props.category}/${props.taskId}`)
       if (response.data.status === 'success' && response.data.taskId === props.taskId)
         setStatus('deleted')
     } catch {
@@ -58,7 +57,10 @@ const Task = (props) => {
       <button
         type="button"
         className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('in progress')}
+        onClick={() => {
+          setEditMode(false)
+          patchStatus('in progress')
+        }}
       >
         In progress
       </button>
@@ -70,7 +72,10 @@ const Task = (props) => {
       <button
         type="button"
         className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('blocked')}
+        onClick={() => {
+          setEditMode(false)
+          patchStatus('blocked')
+        }}
       >
         Block
       </button>
@@ -82,7 +87,10 @@ const Task = (props) => {
       <button
         type="button"
         className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('done')}
+        onClick={() => {
+          setEditMode(false)
+          patchStatus('done')
+        }}
       >
         Done
       </button>
@@ -106,7 +114,10 @@ const Task = (props) => {
       <button
         type="button"
         className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => deleteTask()}
+        onClick={() => {
+          setEditMode(false)
+          deleteTask()
+        }}
       >
         Del
       </button>
@@ -125,14 +136,17 @@ const Task = (props) => {
     )
   }
 
-  const UndoButton = () => {
+  const CancelButton = () => {
     return (
       <button
         type="button"
         className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => setInputValue(props.title)}
+        onClick={() => {
+          setInputValue(props.title)
+          setEditMode(false)
+        }}
       >
-        Undo
+        Cancel
       </button>
     )
   }
@@ -155,32 +169,38 @@ const Task = (props) => {
     }
   }
 
+  const handleOnKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      patchTitle(inputValue)
+    }
+  }
+
   return (
-    <div className="flex flex-col w-full md:text-xl text-sm py-2">
+    <div className="flex flex-col max-w-full md:text-xl text-sm py-2">
       <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
-        <div className="flex flex-grow">
-          <b className="flex px-2">Title:</b>
-          {editMode ? (
-            <input
-              className="flex flex-grow rounded border-2"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-          ) : (
-            <span
-              className={classnames('', {
-                'line-through': status === 'deleted'
-              })}
-            >
-              {title}
-            </span>
-          )}
-        </div>
+        <b className="flex px-2">Title:</b>
+        {editMode ? (
+          <input
+            className="flex flex-1 min-w-0 rounded border-2"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={(e) => handleOnKeyPress(e)}
+          />
+        ) : (
+          <span
+            className={classnames(
+              status === 'deleted' ? 'flex flex-1 line-through' : 'flex flex-1'
+            )}
+          >
+            {title}
+          </span>
+        )}
 
         {status !== 'deleted' ? (
           <>
             {status !== 'done' && <EditButton />}
-            {editMode ? <UndoButton /> : <DeleteButton />}
+            {editMode ? <CancelButton /> : <DeleteButton />}
           </>
         ) : (
           <RestoreButton />
