@@ -1,37 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
+import Category from './category'
 
 const CategoriesList = (props) => {
-  const { categoriesArray, setCategoriesArray, setError } = props
-  const deleteCategory = async (category) => {
-    try {
-      await axios.delete(`/api/v1/tasks/${category}`)
-      setCategoriesArray(categoriesArray.filter((it) => it !== category))
-    } catch (error) {
-      setError({
-        type: 'sending',
-        text: 'Cannot delete category, try again later'
-      })
-    }
-  }
+  const { categoriesArray } = props
 
   return categoriesArray.map((category) => {
-    return (
-      <div
-        className="flex flex-row p-2 pl-4 border-2 md:text-xl text-sm font-semibold bg-yellow-300 justify-between"
-        key={category}
-      >
-        <Link to={`/${category}`}>{category}</Link>
-        <button
-          className="flex m-1 mr-2 px-1 bg-gray-500 rounded items-center"
-          type="button"
-          onClick={() => deleteCategory(category)}
-        >
-          Delete
-        </button>
-      </div>
-    )
+    return <Category key={category} category={category} {...props} />
   })
 }
 

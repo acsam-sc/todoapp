@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { history } from '../redux'
 import Error from './error'
 import CategoriesList from './categoriesList'
+import NewCategory from './newcategory'
 
 const Categories = () => {
   const [categoriesArray, setCategoriesArray] = useState([])
-  const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState(null)
-  const [isFetching, setIsFetching] = useState(null)
+  const [isFetching, setIsFetching] = useState(false)
+  const [isAddingNewCategory, setAddingNewCategory] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
@@ -25,18 +25,20 @@ const Categories = () => {
     getData()
   }, [])
 
-  const handleOnKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      history.push(`/${inputValue.toLowerCase()}`)
-    }
-  }
-
   return (
-    <div className="flex flex-row flex-1 w-full justify-center absolute inset-0 overflow-y-auto">
-      <div className="flex flex-col md:w-1/2 w-full justify-between">
-        <div className="p-4 md:text-2xl text-normal font-bold bg-orange-300">Categories:</div>
-        <div className="flex flex-grow flex-col w-full bg-yellow-200">
+    <div className="flex flex-row flex-1 w-full justify-center absolute inset-0">
+      <div className="flex flex-col md:w-1/2 w-full justify-between border-2 bg-gray-100">
+        <div className="flex p-4 justify-between">
+          <span className="flex ml-6 md:text-2xl font-bold justify-center">Categories</span>
+          <button
+            className="flex ml-2 px-1 rounded md:text-normal text-xs text-blue-500 bg-blue-200 items-center"
+            type="button"
+            onClick={() => setAddingNewCategory(!isAddingNewCategory)}
+          >
+            + New Category
+          </button>
+        </div>
+        <div className="flex flex-grow flex-col w-full overflow-y-auto">
           {categoriesArray.length > 0 && (
             <CategoriesList
               categoriesArray={categoriesArray}
@@ -46,32 +48,16 @@ const Categories = () => {
           )}
           {error && <Error error={error} />}
           {isFetching && (
-            <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">
+            <div className="flex flex-grow p-2 pl-4 md:text-xl font-semibold items-center justify-center">
               Loading...
             </div>
           )}
           {categoriesArray.length === 0 && !error && !isFetching && (
-            <div className="flex flex-grow p-2 pl-4 md:text-xl text-sm font-semibold items-center justify-center">
+            <div className="flex flex-grow p-2 pl-4 md:text-xl font-semibold items-center justify-center">
               There are no categories yet
             </div>
           )}
-        </div>
-        <div className="flex flex-row border-2 w-full md:text-xl text-sm justify-between items-center bg-yellow-300">
-          <span className="flex font-semibold px-2">New category:</span>
-          <input
-            className="flex flex-grow min-w-0 border-2 rounded border-black"
-            placeholder="Enter category name"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={(e) => handleOnKeyPress(e)}
-          />
-          <button
-            className="flex m-1 mr-2 px-1 rounded bg-gray-500"
-            type="button"
-            onClick={() => history.push(`/${inputValue.toLowerCase()}`)}
-          >
-            Add
-          </button>
+          {isAddingNewCategory && <NewCategory setAddingNewCategory={setAddingNewCategory} />}
         </div>
       </div>
     </div>
