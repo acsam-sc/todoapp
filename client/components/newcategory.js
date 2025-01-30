@@ -8,7 +8,7 @@ const NewCategory = (props) => {
   const handleOnKeyPress = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      history.push(`/${inputValue.toLowerCase()}`)
+      history.push(`/${inputValue}`)
     }
   }
 
@@ -26,7 +26,7 @@ const NewCategory = (props) => {
         type="button"
         onClick={() => {
           setInputValue('')
-          history.push(`/${inputValue.toLowerCase()}`)
+          history.push(`/${inputValue}`)
         }}
       >
         Add

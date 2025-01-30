@@ -51,7 +51,8 @@ const writeCategoryFile = async (data, filename) => {
 const deleteCategoryFile = async (category) => {
   const timestamp = new Date()
   const year = timestamp.getUTCFullYear().toString().padStart(2, '0')
-  const month = timestamp.getUTCMonth().toString().padStart(2, '0')
+  const monthFromZero = timestamp.getUTCMonth() + 1
+  const month = monthFromZero.toString().padStart(2, '0')
   const date = timestamp.getUTCDate().toString().padStart(2, '0')
   const hours = timestamp.getUTCHours().toString().padStart(2, '0')
   const minutes = timestamp.getUTCMinutes().toString().padStart(2, '0')

@@ -19,7 +19,7 @@ const Category = (props) => {
   }
 
   return (
-    <div className="flex flex-row p-2 px-2 md:px-4 m-2 border-2 rounded-md md:text-xl text-sm font-semibold justify-between bg-white">
+    <div className="flex flex-row p-2 md:px-4 m-2 border-2 rounded-md md:text-xl text-sm font-semibold justify-between bg-white">
       <input
         className="flex mr-2 rounded justify-center"
         type="checkbox"
@@ -31,7 +31,7 @@ const Category = (props) => {
       </Link>
       {isCategoryChecked && (
         <button
-          className="flex m-1 px-1 md:text-sm bg-gray-300 rounded"
+          className="flex px-1 md:text-sm bg-gray-300 rounded items-center"
           type="button"
           onClick={() => deleteCategory(category)}
         >

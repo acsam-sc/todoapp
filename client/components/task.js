@@ -4,23 +4,27 @@ import classnames from 'classnames'
 import Error from './error'
 
 const Task = (props) => {
+  const { taskId, category } = props
   const [editMode, setEditMode] = useState(false)
   const [inputValue, setInputValue] = useState(props.title)
   const [title, setTitle] = useState(props.title)
   const [status, setStatus] = useState(props.status)
   const [error, setError] = useState(null)
 
-  const patchTitle = async (newTitle) => {
+  const buttonStyle = 'flex m-1 mr-2 px-1 rounded bg-gray-300 md:text-normal text-sm'
+
+  const patchTitle = async () => {
     if (inputValue !== title) {
       setError(null)
       try {
-        const response = await axios.patch(`/api/v1/tasks/${props.category}/${props.taskId}`, {
-          title: newTitle
+        const response = await axios.patch(`/api/v1/tasks/${category}/${taskId}`, {
+          title: inputValue
         })
-        if (response.data.status === 'success' && response.data.taskId === props.taskId)
-          setTitle(newTitle)
+        if (response.data.status === 'success' && response.data.taskId === taskId)
+          setTitle(inputValue)
       } catch {
         setError('Error updating title, please try again')
+        setTitle(props.title)
       }
     }
     setEditMode(false)
@@ -29,12 +33,12 @@ const Task = (props) => {
   const patchStatus = async (newStatus, _isDeleted = false, _deletedAt = null) => {
     setError(null)
     try {
-      const response = await axios.patch(`/api/v1/tasks/${props.category}/${props.taskId}`, {
+      const response = await axios.patch(`/api/v1/tasks/${category}/${taskId}`, {
         status: newStatus,
         _isDeleted,
         _deletedAt
       })
-      if (response.data.status === 'success' && response.data.taskId === props.taskId)
+      if (response.data.status === 'success' && response.data.taskId === taskId)
         setStatus(newStatus)
     } catch {
       setError('Error updating status, please try again')
@@ -44,8 +48,8 @@ const Task = (props) => {
   const deleteTask = async () => {
     setError(null)
     try {
-      const response = await axios.delete(`/api/v1/tasks/${props.category}/${props.taskId}`)
-      if (response.data.status === 'success' && response.data.taskId === props.taskId)
+      const response = await axios.delete(`/api/v1/tasks/${category}/${taskId}`)
+      if (response.data.status === 'success' && response.data.taskId === taskId)
         setStatus('deleted')
     } catch {
       setError('Error deleting task, please try again')
@@ -56,10 +60,10 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        className={buttonStyle}
         onClick={() => {
           setEditMode(false)
-          patchStatus('in progress')
+          patchStatus('in_progress')
         }}
       >
         In progress
@@ -71,7 +75,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        className={buttonStyle}
         onClick={() => {
           setEditMode(false)
           patchStatus('blocked')
@@ -86,7 +90,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        className={buttonStyle}
         onClick={() => {
           setEditMode(false)
           patchStatus('done')
@@ -101,8 +105,8 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => (editMode ? patchTitle(inputValue) : setEditMode(true))}
+        className={buttonStyle}
+        onClick={() => (editMode ? patchTitle() : setEditMode(true))}
       >
         {editMode ? 'Save' : 'Edit'}
       </button>
@@ -113,7 +117,7 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        className={buttonStyle}
         onClick={() => {
           setEditMode(false)
           deleteTask()
@@ -126,11 +130,7 @@ const Task = (props) => {
 
   const RestoreButton = () => {
     return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus(props.status)}
-      >
+      <button type="button" className={buttonStyle} onClick={() => patchStatus(props.status)}>
         Restore
       </button>
     )
@@ -140,9 +140,9 @@ const Task = (props) => {
     return (
       <button
         type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
+        className={buttonStyle}
         onClick={() => {
-          setInputValue(props.title)
+          setTitle(props.title)
           setEditMode(false)
         }}
       >
@@ -155,7 +155,7 @@ const Task = (props) => {
     switch (status) {
       case 'new':
         return <InProgressButton />
-      case 'in progress':
+      case 'in_progress':
         return (
           <>
             <BlockButton />
@@ -172,14 +172,21 @@ const Task = (props) => {
   const handleOnKeyPress = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      patchTitle(inputValue)
+      patchTitle()
     }
   }
 
   return (
-    <div className="flex flex-col max-w-full md:text-xl text-sm py-2">
-      <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
-        <b className="flex px-2">Title:</b>
+    <div className="flex flex-col p-2 md:px-4 m-1 border-2 rounded-md max-w-full md:text-xl text-sm font-semibold bg-white">
+      <div
+        className={classnames('flex flex-row justify-between items-center', {
+          'text-black': status === 'new',
+          'text-red-500': status === 'blocked',
+          'text-red-500 line-through': status === 'deleted',
+          'text-blue-500': status === 'in_progress',
+          'text-green-500': status === 'done'
+        })}
+      >
         {editMode ? (
           <input
             className="flex flex-1 min-w-0 rounded border-2"
@@ -190,7 +197,7 @@ const Task = (props) => {
         ) : (
           <span
             className={classnames(
-              status === 'deleted' ? 'flex flex-1 line-through' : 'flex flex-1'
+              status === 'deleted' ? 'flex-1 pl-2 line-through' : 'flex-1 pl-4'
             )}
           >
             {title}
@@ -209,17 +216,9 @@ const Task = (props) => {
 
       {error && <Error error={error} />}
 
-      <div
-        className={classnames('border-2 flex flex-row justify-between', {
-          'bg-gray-500': status === 'new',
-          'bg-red-600': status === 'blocked' || status === 'deleted',
-          'bg-blue-300': status === 'in progress',
-          'bg-green-300': status === 'done'
-        })}
-      >
+      <div className="flex flex-row justify-between">
         <div className="flex">
-          <b className="px-2">Status:</b>
-          {status}
+          <span className="px-2">({status})</span>
         </div>
         <div className="flex flex-row">
           <StatusButtons />

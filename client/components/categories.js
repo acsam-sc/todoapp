@@ -39,6 +39,7 @@ const Categories = () => {
           </button>
         </div>
         <div className="flex flex-grow flex-col w-full overflow-y-auto">
+          {isAddingNewCategory && <NewCategory setAddingNewCategory={setAddingNewCategory} />}
           {categoriesArray.length > 0 && (
             <CategoriesList
               categoriesArray={categoriesArray}
@@ -57,7 +58,6 @@ const Categories = () => {
               There are no categories yet
             </div>
           )}
-          {isAddingNewCategory && <NewCategory setAddingNewCategory={setAddingNewCategory} />}
         </div>
       </div>
     </div>
