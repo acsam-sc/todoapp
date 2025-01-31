@@ -2,209 +2,84 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import classnames from 'classnames'
 import Error from './error'
+import ThreeDotsMenu from './threedotsmenu'
 
 const Task = (props) => {
-  const apiUrl = `${window.location.origin}/api/v1`
+  const { taskId, category } = props
   const [editMode, setEditMode] = useState(false)
   const [inputValue, setInputValue] = useState(props.title)
   const [title, setTitle] = useState(props.title)
   const [status, setStatus] = useState(props.status)
   const [error, setError] = useState(null)
 
-  const patchTitle = async (newTitle) => {
+  const patchTitle = async () => {
     if (inputValue !== title) {
       setError(null)
       try {
-        const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${props.taskId}`, {
-          title: newTitle
+        const response = await axios.patch(`/api/v1/tasks/${category}/${taskId}`, {
+          title: inputValue
         })
-        if (response.data.status === 'success' && response.data.taskId === props.taskId)
-          setTitle(newTitle)
+        if (response.data.status === 'success' && response.data.taskId === taskId)
+          setTitle(inputValue)
       } catch {
         setError('Error updating title, please try again')
+        setTitle(props.title)
       }
     }
     setEditMode(false)
   }
 
-  const patchStatus = async (newStatus, _isDeleted = false, _deletedAt = null) => {
-    setError(null)
-    try {
-      const response = await axios.patch(`${apiUrl}/tasks/${props.category}/${props.taskId}`, {
-        status: newStatus,
-        _isDeleted,
-        _deletedAt
-      })
-      if (response.data.status === 'success' && response.data.taskId === props.taskId)
-        setStatus(newStatus)
-    } catch {
-      setError('Error updating status, please try again')
-    }
-  }
-
-  const deleteTask = async () => {
-    setError(null)
-    try {
-      const response = await axios.delete(`${apiUrl}/tasks/${props.category}/${props.taskId}`)
-      if (response.data.status === 'success' && response.data.taskId === props.taskId)
-        setStatus('deleted')
-    } catch {
-      setError('Error deleting task, please try again')
-    }
-  }
-
-  const InProgressButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('in progress')}
-      >
-        In progress
-      </button>
-    )
-  }
-
-  const BlockButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('blocked')}
-      >
-        Block
-      </button>
-    )
-  }
-
-  const DoneButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus('done')}
-      >
-        Done
-      </button>
-    )
-  }
-
-  const EditButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => (editMode ? patchTitle(inputValue) : setEditMode(true))}
-      >
-        {editMode ? 'Save' : 'Edit'}
-      </button>
-    )
-  }
-
-  const DeleteButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => deleteTask()}
-      >
-        Del
-      </button>
-    )
-  }
-
-  const RestoreButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => patchStatus(props.status)}
-      >
-        Restore
-      </button>
-    )
-  }
-
-  const UndoButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex m-1 mr-2 px-1 rounded bg-gray-400"
-        onClick={() => setInputValue(props.title)}
-      >
-        Undo
-      </button>
-    )
-  }
-
-  const StatusButtons = () => {
-    switch (status) {
-      case 'new':
-        return <InProgressButton />
-      case 'in progress':
-        return (
-          <>
-            <BlockButton />
-            <DoneButton />
-          </>
-        )
-      case 'blocked':
-        return <InProgressButton />
-      default:
-        return <></>
+  const handleOnKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      patchTitle()
     }
   }
 
   return (
-    <div className="flex flex-col w-full md:text-xl text-sm py-2">
-      <div className="border-2 flex flex-row justify-between items-center bg-yellow-300">
-        <div className="flex flex-grow">
-          <b className="flex px-2">Title:</b>
-          {editMode ? (
-            <input
-              className="flex flex-grow rounded border-2"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-          ) : (
-            <span
-              className={classnames('', {
-                'line-through': status === 'deleted'
-              })}
-            >
-              {title}
-            </span>
-          )}
-        </div>
-
-        {status !== 'deleted' ? (
-          <>
-            {status !== 'done' && <EditButton />}
-            {editMode ? <UndoButton /> : <DeleteButton />}
-          </>
+    <div className="flex flex-col p-2 md:px-4 m-1 border-2 rounded-md max-w-full md:text-xl text-sm font-semibold bg-white">
+      <div
+        className={classnames('flex flex-row justify-between items-center', {
+          'text-black': status === 'new',
+          'text-red-500': status === 'blocked',
+          'text-red-500 line-through': status === 'deleted',
+          'text-blue-500': status === 'in_progress',
+          'text-green-500': status === 'done'
+        })}
+      >
+        {editMode ? (
+          <input
+            className="flex flex-1 min-w-0 rounded border-2"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={(e) => handleOnKeyPress(e)}
+          />
         ) : (
-          <RestoreButton />
+          <span
+            className={classnames(
+              status === 'deleted' ? 'flex-1 pl-4 line-through' : 'flex-1 pl-4'
+            )}
+          >
+            {title}
+          </span>
         )}
+
+        <ThreeDotsMenu
+          origTitle={props.title}
+          setTitle={setTitle}
+          status={status}
+          setStatus={setStatus}
+          origStatus={props.status}
+          setError={setError}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          taskId={taskId}
+          category={category}
+          patchTitle={patchTitle}
+        />
       </div>
 
       {error && <Error error={error} />}
-
-      <div
-        className={classnames('border-2 flex flex-row justify-between', {
-          'bg-gray-500': status === 'new',
-          'bg-red-600': status === 'blocked' || status === 'deleted',
-          'bg-blue-300': status === 'in progress',
-          'bg-green-300': status === 'done'
-        })}
-      >
-        <div className="flex">
-          <b className="px-2">Status:</b>
-          {status}
-        </div>
-        <div className="flex flex-row">
-          <StatusButtons />
-        </div>
-      </div>
     </div>
   )
 }
