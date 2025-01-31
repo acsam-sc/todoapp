@@ -13,6 +13,7 @@ const ToDoApp = () => {
   const [error, setError] = useState({ type: null, text: null })
   const { category } = useParams()
   const [isFetching, setIsFetching] = useState(null)
+  const [isAddingNewtask, setAddingNewTask] = useState(false)
 
   const sendNewTask = async (title) => {
     if (title !== '') {
@@ -60,6 +61,13 @@ const ToDoApp = () => {
         <div className="flex flex-row px-4 justify-between">
           <div className="flex p-4 font-bold md:text-2xl text-normal">{category}</div>
           <div className="flex pr-2 items-center">
+            <button
+              className="flex mr-2 p-2 rounded md:text-normal text-xs text-blue-500 bg-blue-200 items-center"
+              type="button"
+              onClick={() => setAddingNewTask(!isAddingNewtask)}
+            >
+              + New Task
+            </button>
             <Link className="px-1 bg-gray-300 rounded md:text-normal text-sm" to="/">
               Back
             </Link>
@@ -69,6 +77,13 @@ const ToDoApp = () => {
           <StatusFilters getData={getData} setStatusToFilter={setStatusToFilter} />
         </div>
         <div className="flex flex-grow flex-col overflow-y-auto">
+          {isAddingNewtask && (
+            <AddNewTask
+              sendNewTask={sendNewTask}
+              newTaskTitle={newTaskTitle}
+              setAddingNewTask={setAddingNewTask}
+            />
+          )}
           {tasksArray.length > 0 &&
             tasksArray
               .filter((task) => (statusToFilter ? task.status === statusToFilter : true))
@@ -92,9 +107,6 @@ const ToDoApp = () => {
               List is empty
             </div>
           )}
-        </div>
-        <div className="flex">
-          <AddNewTask sendNewTask={sendNewTask} newTaskTitle={newTaskTitle} />
         </div>
       </div>
     </div>

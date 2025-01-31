@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+// import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 const Category = (props) => {
-  const [isCategoryChecked, setIsCategoryChecked] = useState(false)
   const { category, categoriesArray, setCategoriesArray, setError } = props
 
   const deleteCategory = async () => {
@@ -20,24 +20,16 @@ const Category = (props) => {
 
   return (
     <div className="flex flex-row p-2 md:px-4 m-2 border-2 rounded-md md:text-xl text-sm font-semibold justify-between bg-white">
-      <input
-        className="flex mr-2 rounded justify-center"
-        type="checkbox"
-        checked={isCategoryChecked}
-        onChange={() => setIsCategoryChecked(!isCategoryChecked)}
-      />
       <Link className="flex-1 content-center" to={`/${category}`}>
         {category}
       </Link>
-      {isCategoryChecked && (
-        <button
-          className="flex px-1 md:text-sm bg-gray-300 rounded items-center"
-          type="button"
-          onClick={() => deleteCategory(category)}
-        >
-          Delete
-        </button>
-      )}
+      <button
+        className="flex px-1 md:text-sm bg-gray-300 rounded items-center"
+        type="button"
+        onClick={() => deleteCategory(category)}
+      >
+        Delete
+      </button>
     </div>
   )
 }

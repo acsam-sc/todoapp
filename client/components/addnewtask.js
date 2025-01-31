@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
+const AddNewTask = ({ newTaskTitle, sendNewTask, setAddingNewTask }) => {
   const [inputValue, setInputValue] = useState('')
 
   const handleOnKeyPress = (event) => {
@@ -15,21 +15,30 @@ const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
   }, [newTaskTitle])
 
   return (
-    <div className="flex flex-row border-2 w-full md:text-xl text-sm justify-between items-center">
-      <span className="flex font-bold px-2">New task:</span>
+    <div className="flex flex-row p-2 px-2 md:px-4 m-2 border-2 rounded-md md:text-xl text-sm font-semibold justify-between bg-white">
       <input
         className="flex flex-grow min-w-0 border-2 rounded border-gray-500"
-        placeholder="Enter task name"
+        placeholder="Enter new task name"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyPress={(e) => handleOnKeyPress(e)}
       />
       <button
-        className="flex m-1 mr-2 px-1 rounded bg-gray-300"
+        className="flex ml-2 px-1 rounded md:text-sm bg-gray-300 items-center"
         type="button"
         onClick={() => sendNewTask(inputValue)}
       >
         Add
+      </button>
+      <button
+        className="flex ml-2 px-1 rounded md:text-sm bg-gray-300 items-center"
+        type="button"
+        onClick={() => {
+          setInputValue('')
+          setAddingNewTask(false)
+        }}
+      >
+        Cancel
       </button>
     </div>
   )
