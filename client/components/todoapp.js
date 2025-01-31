@@ -29,6 +29,7 @@ const ToDoApp = () => {
             }
           ])
           setNewTaskTitle(response.data.taskId)
+          setAddingNewTask(false)
         }
       } catch {
         setError({ type: 'sending', text: 'Error sending task, please try again' })

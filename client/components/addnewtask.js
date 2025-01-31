@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const AddNewTask = ({ newTaskTitle, sendNewTask, setAddingNewTask }) => {
+const AddNewTask = ({ newTaskTitle, sendNewTask }) => {
   const [inputValue, setInputValue] = useState('')
 
   const handleOnKeyPress = (event) => {
@@ -35,7 +35,6 @@ const AddNewTask = ({ newTaskTitle, sendNewTask, setAddingNewTask }) => {
         type="button"
         onClick={() => {
           setInputValue('')
-          setAddingNewTask(false)
         }}
       >
         Cancel
