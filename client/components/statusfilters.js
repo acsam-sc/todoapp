@@ -12,14 +12,14 @@ const StatusFilters = ({ getData, setStatusToFilter }) => {
     <>
       <button
         type="button"
-        className={`${buttonStyle} bg-gray-300`}
+        className={`${buttonStyle} bg-gray-200`}
         onClick={() => handleOnClick('')}
       >
         All
       </button>
       <button
         type="button"
-        className={`${buttonStyle} bg-gray-300`}
+        className={`${buttonStyle} bg-gray-200`}
         onClick={() => handleOnClick('new')}
       >
         New

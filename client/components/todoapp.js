@@ -69,7 +69,7 @@ const ToDoApp = () => {
             >
               + New Task
             </button>
-            <Link className="px-1 bg-gray-300 rounded md:text-normal text-sm" to="/">
+            <Link className="px-1 bg-gray-200 rounded md:text-normal text-sm" to="/">
               Back
             </Link>
           </div>

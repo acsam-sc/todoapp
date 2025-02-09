@@ -24,7 +24,7 @@ const Category = (props) => {
         {category}
       </Link>
       <button
-        className="flex px-1 md:text-sm bg-gray-300 rounded items-center"
+        className="flex px-1 md:text-sm bg-gray-200 rounded items-center"
         type="button"
         onClick={() => deleteCategory(category)}
       >

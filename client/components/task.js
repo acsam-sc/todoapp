@@ -12,6 +12,9 @@ const Task = (props) => {
   const [status, setStatus] = useState(props.status)
   const [error, setError] = useState(null)
 
+  const buttonStyle =
+    'flex px-2 py-1 mx-1 md:text-base text-xs font-semibold text-gray-700 bg-gray-100'
+
   const patchTitle = async () => {
     if (inputValue !== title) {
       setError(null)
@@ -27,6 +30,33 @@ const Task = (props) => {
       }
     }
     setEditMode(false)
+  }
+
+  const SaveButton = () => {
+    return (
+      <button
+        type="button"
+        className={`${buttonStyle} hover:bg-gray-100 hover:text-gray-900`}
+        onClick={() => patchTitle()}
+      >
+        {editMode ? 'Save' : 'Edit'}
+      </button>
+    )
+  }
+
+  const CancelButton = () => {
+    return (
+      <button
+        type="button"
+        className={`${buttonStyle} hover:bg-gray-100 hover:text-gray-900`}
+        onClick={() => {
+          setTitle(props.title)
+          setEditMode(false)
+        }}
+      >
+        Cancel
+      </button>
+    )
   }
 
   const handleOnKeyPress = (event) => {
@@ -48,35 +78,40 @@ const Task = (props) => {
         })}
       >
         {editMode ? (
-          <input
-            className="flex flex-1 min-w-0 rounded border-2"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={(e) => handleOnKeyPress(e)}
-          />
+          <>
+            <input
+              className="flex flex-1 min-w-0 rounded border-2 font-semibold"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => handleOnKeyPress(e)}
+            />
+            <SaveButton />
+            <CancelButton />
+          </>
         ) : (
           <span
             className={classnames(
-              status === 'deleted' ? 'flex-1 pl-4 line-through' : 'flex-1 pl-4'
+              status === 'deleted'
+                ? 'flex-1 px-2 text-clip line-through break-all'
+                : 'flex-1 px-2 break-all'
             )}
           >
             {title}
           </span>
         )}
 
-        <ThreeDotsMenu
-          origTitle={props.title}
-          setTitle={setTitle}
-          status={status}
-          setStatus={setStatus}
-          origStatus={props.status}
-          setError={setError}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          taskId={taskId}
-          category={category}
-          patchTitle={patchTitle}
-        />
+        {!editMode && (
+          <ThreeDotsMenu
+            status={status}
+            setStatus={setStatus}
+            origStatus={props.status}
+            setError={setError}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            taskId={taskId}
+            category={category}
+          />
+        )}
       </div>
 
       {error && <Error error={error} />}

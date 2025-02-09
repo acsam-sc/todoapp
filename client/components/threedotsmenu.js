@@ -3,17 +3,7 @@ import axios from 'axios'
 import useOutsideClick from './useOutsideClick'
 
 const ThreeDotsMenu = (props) => {
-  const {
-    origTitle,
-    setTitle,
-    status,
-    setStatus,
-    origStatus,
-    setError,
-    editMode,
-    setEditMode,
-    patchTitle
-  } = props
+  const { status, setStatus, origStatus, setError, editMode, setEditMode } = props
   const [isOpen, setIsOpen] = useState(false)
   const { taskId, category } = props
 
@@ -52,10 +42,10 @@ const ThreeDotsMenu = (props) => {
     }
   }
 
-  const handleSaveButton = () => {
-    patchTitle()
-    setIsOpen(false)
-  }
+  // const handleSaveButton = () => {
+  //   patchTitle()
+  //   setIsOpen(false)
+  // }
 
   const handleEditButton = () => {
     setEditMode(true)
@@ -115,9 +105,9 @@ const ThreeDotsMenu = (props) => {
       <button
         type="button"
         className={`${buttonStyle} hover:bg-gray-100 hover:text-gray-900`}
-        onClick={() => (editMode ? handleSaveButton() : handleEditButton())}
+        onClick={() => handleEditButton()}
       >
-        {editMode ? 'Save' : 'Edit'}
+        Edit
       </button>
     )
   }
@@ -150,21 +140,21 @@ const ThreeDotsMenu = (props) => {
     )
   }
 
-  const CancelButton = () => {
-    return (
-      <button
-        type="button"
-        className={`${buttonStyle} hover:bg-gray-100 hover:text-gray-900`}
-        onClick={() => {
-          setTitle(origTitle)
-          setEditMode(false)
-          setIsOpen(false)
-        }}
-      >
-        Cancel
-      </button>
-    )
-  }
+  // const CancelButton = () => {
+  //   return (
+  //     <button
+  //       type="button"
+  //       className={`${buttonStyle} hover:bg-gray-100 hover:text-gray-900`}
+  //       onClick={() => {
+  //         setTitle(origTitle)
+  //         setEditMode(false)
+  //         setIsOpen(false)
+  //       }}
+  //     >
+  //       Cancel
+  //     </button>
+  //   )
+  // }
 
   const StatusButtons = () => {
     switch (status) {
@@ -212,7 +202,7 @@ const ThreeDotsMenu = (props) => {
           {status !== 'deleted' ? (
             <>
               {status !== 'done' && <EditButton />}
-              {editMode ? <CancelButton /> : <DeleteButton />}
+              <DeleteButton />
             </>
           ) : (
             <RestoreButton />
